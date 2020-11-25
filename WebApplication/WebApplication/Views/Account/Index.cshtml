@@ -15,10 +15,9 @@
     }
 </style>
 <input type="hidden" id="CurrentOffSet" value="0" />
-<input type="text" id="CurrentPageSize" value="40" />
+<input type="hidden" id="CurrentPageSize" value="40" />
 <input type="hidden" id="CurrentSortOrder" value="asc" />
 <input type="hidden" id="CurrentSortBy" value="FirstName" />
-<input type="button" id="btnLoad" value="Load" />
 <span>Total Records: <span id="totalCount">@(Model.TotalRecords)</span></span>
 <table style="width:100%;" class="gj-grid-table table table-bordered table-hover">
     <tr>
@@ -63,12 +62,6 @@
             $("#CurrentSortOrder").val($(this).attr("data-sort-order"));
 
             GetData(0, parseInt($("#CurrentPageSize").val()), _sortColumn, $(this).attr("data-sort-order"), 1);
-        });
-
-        $("#btnLoad").click(function () {
-            if (parseInt($("#CurrentPageSize").val()) <= parseInt($("#totalCount").text())) {
-
-            }
         });
 
         $(window).scroll(function () {
