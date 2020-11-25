@@ -1,0 +1,28 @@
+﻿@model List<ViewModel.AccountViewModel>
+
+@{
+    int _count = 1;
+}
+
+@foreach (var item in Model)
+{
+    DateTime _sd = Convert.ToDateTime(item.StartDate);
+    string _day = _sd.Day.ToString();
+    string _month = _sd.ToString("MMMM");
+    string _year = _sd.Year.ToString();
+
+<tr>
+    <td>@(string.IsNullOrEmpty(item.FirstName) ? "-" : item.FirstName)</td>
+    <td>@(string.IsNullOrEmpty(item.LastName) ? "-" : item.LastName)</td>
+    <td>@(string.IsNullOrEmpty(item.Email) ? "-" : item.Email)</td>
+    <td>@(string.IsNullOrEmpty(item.StartDate) ? "-" : _month + "," + _day + "/" + _year)</td>
+    <td>@(string.IsNullOrEmpty(item.Address1) ? "-" : item.Address1)</td>
+    <td>@(string.IsNullOrEmpty(item.Address2) ? "-" : item.Address2)</td>
+    <td>@(string.IsNullOrEmpty(item.City) ? "-" : item.City)</td>
+    <td>@(string.IsNullOrEmpty(item.Province) ? "-" : item.Province)</td>
+    <td>@(string.IsNullOrEmpty(item.PostalCode) ? "-" : item.Email)</td>
+    <td>@(string.IsNullOrEmpty(item.Email) ? "-" : item.Email)</td>
+</tr>
+    _count = _count + 1;
+}
+

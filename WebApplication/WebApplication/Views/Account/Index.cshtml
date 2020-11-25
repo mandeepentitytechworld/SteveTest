@@ -1,0 +1,120 @@
+﻿@model ViewModel.Accounts
+
+<style>
+    .table th {
+        cursor: pointer;
+    }
+
+    .table td, .table th {
+        padding: 0;
+        text-align: center;
+    }
+
+    td {
+        font-size: 15px;
+    }
+</style>
+<input type="hidden" id="CurrentOffSet" value="0" />
+<input type="text" id="CurrentPageSize" value="40" />
+<input type="hidden" id="CurrentSortOrder" value="asc" />
+<input type="hidden" id="CurrentSortBy" value="FirstName" />
+<input type="button" id="btnLoad" value="Load" />
+<span>Total Records: <span id="totalCount">@(Model.TotalRecords)</span></span>
+<table style="width:100%;" class="gj-grid-table table table-bordered table-hover">
+    <tr>
+        <th class="SortMe" data-name="FirstName" data-sort-order="asc">First Name</th>
+        <th class="SortMe" data-name="LastName" data-sort-order="asc">Last Name</th>
+        <th class="SortMe" data-name="Email" data-sort-order="asc">Email</th>
+        <th class="SortMe" data-name="Address1" data-sort-order="asc">Address1</th>
+        <th class="SortMe" data-name="Address2" data-sort-order="asc">Address2</th>
+        <th class="SortMe" data-name="City" data-sort-order="asc">City</th>
+        <th class="SortMe" data-name="Province" data-sort-order="asc">Province</th>
+        <th class="SortMe" data-name="PostalCode" data-sort-order="asc">Postal Code</th>
+        <th class="SortMe" data-name="Country" data-sort-order="asc">Country</th>
+        <th class="SortMe" data-name="StartDate" data-sort-order="asc">Start Date</th>
+    </tr>
+    <tbody id="tableBody">
+        @(await Html.PartialAsync("_ListView.cshtml", Model.listAccountViewModel))
+    </tbody>
+</table>
+
+<div style="text-align:center;">
+    <img src="~/200.gif" id="loadingImg" style="display:none; position:absolute" />
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        var _hit = true;
+
+        $(".SortMe").click(function () {
+            var _sortColumn = $(this).attr("data-name");
+            var _sortOrder = $(this).attr("data-sort-order");
+            if (_sortOrder == "desc" || _sortOrder == "") {
+                $(this).attr("data-sort-order", "asc")
+            }
+            else {
+                $(this).attr("data-sort-order", "desc")
+            }
+
+            $("#CurrentSortBy").val($(this).attr("data-name"));
+            $("#CurrentSortOrder").val($(this).attr("data-sort-order"));
+
+            GetData(0, parseInt($("#CurrentPageSize").val()), _sortColumn, $(this).attr("data-sort-order"), 1);
+        });
+
+        $("#btnLoad").click(function () {
+            if (parseInt($("#CurrentPageSize").val()) <= parseInt($("#totalCount").text())) {
+
+            }
+        });
+
+        $(window).scroll(function () {
+            if (parseInt($("#CurrentPageSize").val()) <= parseInt($("#totalCount").text())) {
+
+                if ($(window).scrollTop() + $(window).height() > $(document).height() - 200) {
+                    if (_hit == true) {
+                        _hit = false;
+                        LazyLoad();
+                    }
+                }
+
+            }
+        });
+
+        function LazyLoad() {
+            $("#loadingImg").show();
+            var _offset = parseInt($("#CurrentOffSet").val()) + parseInt(40);
+            $("#CurrentOffSet").val(_offset);
+            var _pagesize = parseInt($("#CurrentPageSize").val()) + parseInt(40);
+            $("#CurrentPageSize").val(_pagesize);
+            GetData(parseInt(_offset), 40, $("#CurrentSortBy").val(), $("#CurrentSortOrder").val(), 0);
+        }
+
+        function GetData(_skip, _take, _sortColumn, _sortOrder, _sorting) {
+
+            $.ajax({
+                type: "POST",
+                url: "Account/GetList",
+                dataType: "html",
+                data: { Skip: _skip, Take: _take, SortColumn: _sortColumn, SortOrder: _sortOrder },
+                success: function (data) {
+                    if (_sorting == 1) {
+                        $("#tableBody").html("");
+                    }
+                    $("#tableBody").append(data);
+                },
+                error: function (data) {
+                    alert("error");
+                },
+                complete: function (data) {
+                    _hit = true;
+                    $("#loadingImg").hide();
+                }
+            });
+        }
+
+    });
+</script>
