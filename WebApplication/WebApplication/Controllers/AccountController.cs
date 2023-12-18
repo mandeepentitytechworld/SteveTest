@@ -15,15 +15,15 @@ namespace WebApplication.Controllers
             this.accountServices = accountServices;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var _results = accountServices.GetAccounts(0, 40, "FirstName", "asc");
+            var _results = await accountServices.GetAccounts(0, 40, "FirstName", "asc");
             return View(_results);
         }
 
-        public IActionResult GetList(int Skip, int Take, string SortColumn, string SortOrder)
+        public async Task<IActionResult> GetList(int Skip = 0, int Take = 10, string SortColumn = "FirstName", string SortOrder = "desc")
         {
-            var _results = accountServices.GetAccounts(Skip, Take, SortColumn, SortOrder);
+            var _results = await accountServices.GetAccounts(Skip, Take, SortColumn, SortOrder);
             return PartialView("_ListView", _results.listAccountViewModel);
         }
     }
